@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "litellm>=1.72.0",
+    "openai-agents>=0.0.17",
 ]
 
 [project.scripts]

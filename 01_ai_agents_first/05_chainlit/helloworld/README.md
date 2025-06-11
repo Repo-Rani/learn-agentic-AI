@@ -1,0 +1,2 @@
+🚀 Chainlit Message Echo Bot
+This is a simple Chainlit application that receives a message from the user and responds with the same message prefixed by "Received: ". It’s a perfect starting point for learning how to build conversational apps using Chainlit.

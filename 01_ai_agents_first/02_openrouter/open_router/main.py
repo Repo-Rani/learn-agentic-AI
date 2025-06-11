@@ -1,43 +1,32 @@
-import os
+from agents import Runner, RunConfig, Agent, OpenAIChatCompletionsModel, AsyncOpenAI
 from dotenv import load_dotenv
-from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel
-from agents.run import RunConfig
-import asyncio
-
+import os
 load_dotenv()
 
-openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
+API_KEY= os.environ.get("OPENROUTER_API_KEY")
 
-if not openrouter_api_key:
-    raise ValueError("OPENROUTER_API_KEY is not set. Please ensure it is defined in your .env file.")
-
-external_client = AsyncOpenAI(
-    api_key=openrouter_api_key,
+client = AsyncOpenAI(
+    api_key=API_KEY,
     base_url="https://openrouter.ai/api/v1",
 )
 
 model = OpenAIChatCompletionsModel(
-    model="openai/gpt-3.5-turbo",
-
-    openai_client=external_client
+    # model="openai/gpt-3.5-turbo",
+    # model="mistralai/mistral-7b-instruct",
+    model="meta-llama/llama-3-8b-instruct",
+    openai_client=client
 )
 
 config = RunConfig(
     model=model,
-    model_provider=external_client,
-    tracing_disabled=True
+    tracing_disabled=True,
+    model_provider=client)
+
+agent = Agent(
+    name="AI Assistant",
+    instructions="You're AI Assistant!",
 )
 
-
-async def main():
-    agent = Agent(
-        name="Assistant",
-        instructions="You are helpful Assistent.",
-        model=model
-    )
-
-    result = await Runner.run(agent, "Tell me about recursion in programming.", run_config=config)
-    print(result.final_output)
-
-if __name__ == "__main__":
-    asyncio.run(main())
+user_input = input("Enter Here your questions!")
+result = Runner.run_sync(agent, user_input, run_config=config)
+print(result.final_output)
